@@ -1,0 +1,131 @@
+.toolbar-wrapper {
+    width: 100%;
+    max-width: 1080px;
+    text-align: center;
+    height: 150px;
+    display: flex;
+    justify-content: space-evenly;
+    margin: auto;
+    padding-top: 15px;
+}
+
+.toolbar-h2 {
+    font-size: 2rem;
+    padding: 0px;
+    margin: 5px;
+}
+
+.run {
+    font-size: 1.7rem;
+    padding: 5px;
+    border-radius: 4px;
+    background-color: #68e4cb;
+    width: 80px;
+    margin: auto;
+}
+
+.run:hover {
+    cursor: pointer;
+    background-color: #4eb8a2;
+}
+
+.custom-select-wrapper {
+    position: relative;
+    user-select: none;
+    width: 180px;
+    margin: auto;
+    margin-bottom: 10px;
+    margin-top: 10px;
+}
+.custom-select {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    border-width: 0 1px 0 1px;
+    border-style: solid;
+    border-color: #394a6d;
+}
+.custom-select__trigger {
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 10px;
+    font-size: 17px;
+    font-weight: 500;
+    color: #3b3b3b;
+    height: 40px;
+    line-height: 40px;
+    background: #ffffff;
+    cursor: pointer;
+    border-width: 1px 0 1px 0;
+    border-style: solid;
+    border-color: #394a6d;
+}
+.custom-options {
+    position: absolute;
+    display: block;
+    top: 100%;
+    left: 0;
+    right: 0;
+    border: 1px solid #394a6d;
+    border-top: 0;
+    background: #fff;
+    transition: all 0.5s;
+    opacity: 0;
+    visibility: hidden;
+    pointer-events: none;
+    z-index: 2;
+}
+.custom-select.open .custom-options {
+    opacity: 1;
+    visibility: visible;
+    pointer-events: all;
+}
+.custom-option {
+    position: relative;
+    display: block;
+    padding: 0 10px 0 10px;
+    font-size: 17px;
+    font-weight: 500;
+    color: #3b3b3b;
+    line-height: 40px;
+    cursor: pointer;
+    transition: all 0.5s;
+}
+.custom-option:hover {
+    cursor: pointer;
+    background-color: #b2b2b2;
+}
+.custom-option.selected {
+    color: #ffffff;
+    background-color: #305c91;
+}
+
+.marking-tool {
+    font-size: 1.7rem;
+    padding: 15px;
+}
+
+label[for="build"] {
+    padding-right: 20px;
+}
+
+.clear {
+    font-size: 1.7rem;
+    padding: 5px;
+    border-radius: 4px;
+    background-color:#F8D210;
+    width: 120px;
+    margin: auto;
+    margin-top: 15px;
+}
+
+.clear:hover {
+    background-color:#dbb910;
+    cursor: pointer;
+}
+
+input[type='radio'] { 
+    transform: scale(1.1); 
+}

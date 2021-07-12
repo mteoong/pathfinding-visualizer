@@ -1,0 +1,23 @@
+.board-wrapper {
+    width: 100%;
+    height: calc(100%-150px);
+    margin: 0;
+    padding: 0;
+}
+
+td {
+    border: 1px solid #5bc9b1;
+    width: 20px;
+    height: 20px;
+}
+
+tr {
+    display: table-row;
+    vertical-align: inherit;
+    border-color: inherit;
+}
+
+table {
+    transform: translate(-50%, -50%);
+    z-index: -1;
+}
