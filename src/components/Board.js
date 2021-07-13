@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import './board.css';
 import Pixel from './Pixel';
+import Dijkstra from '../algorithms/Dijkstra'
 
 class Board extends Component {
     constructor(props){
@@ -8,13 +9,12 @@ class Board extends Component {
         this.state={
             grid:[],
             mouseClicked:false,
-            mainClicked:"",
+            selected:"",
             start_node:null,
             end_node:null,
             visited:0,
             shortestPath:0,
             number_of_nodes:0,
-            showModal:true
         }
         this.animating=false;
     }
@@ -26,11 +26,11 @@ class Board extends Component {
         })
     }
 
-    makeGrid=()=>{
-        if(this.animating)return;
+    makeGrid = () => {
+        if (this.animating) return;
         const gridWrapper = document.querySelector('#root');
-        let row_size = Math.floor((gridWrapper.offsetHeight - 223)/25);
-        let col_size = Math.min(60, Math.floor((gridWrapper.offsetWidth - 60)/25));
+        let row_size = Math.floor((gridWrapper.offsetHeight - 223)/27);
+        let col_size = Math.min(60, Math.floor((gridWrapper.offsetWidth - 60)/27));
         let arr=[]
         for(let i = 0; i < row_size; i++){
             let row = [];
@@ -48,21 +48,162 @@ class Board extends Component {
             }
             arr.push(row);
         }
-        let start_x= Math.floor(col_size / 3);
-        let start_y= Math.floor(row_size / 2);
-        let end_x= Math.floor(col_size * 2 / 3);
-        let end_y= Math.floor(row_size / 2);
+        let start_x = Math.floor(col_size/ 3);
+        let start_y = Math.floor((row_size - 1) / 2);
+        let end_x = Math.floor(col_size * 2 / 3);
+        let end_y = Math.floor((row_size - 1) / 2);
         arr[start_y][start_x].isStart=true;
         arr[end_y][end_x].isEnd=true;
 
         this.setState({
-            grid:arr,
-            start_node:[start_x,start_y],
-            end_node:[end_x,end_y],
-            number_of_nodes:arr.length*arr[0].length,
-            visited:0,
-            shortestPath:0
+            grid: arr,
+            start_node: [start_x,start_y],
+            end_node: [end_x,end_y],
+            number_of_nodes: arr.length*arr[0].length,
+            visited: 0,
+            shortestPath: 0,
         })
+    }
+
+    handleMouseDown = (row, col) => {
+      if (this.animating) return;
+      let arr = this.state.grid;
+      if (arr[row][col].isStart) {
+          this.setState({
+              selected: "start"
+          });
+      } else if (arr[row][col].isEnd) {
+          this.setState({
+              selected: "end"
+          });
+      }
+
+      if (document.querySelector("input[value='build']").checked) {
+          if(!arr[row][col].isWall && !arr[row][col].isStart && !arr[row][col].isEnd) {
+              arr[row][col].isWall = true;
+          }
+      } else {
+          if(arr[row][col].isWall){
+              arr[row][col].isWall = false;
+          }
+      }
+
+      this.setState({
+          grid: arr,
+          mouseClicked: true
+      })
+    }
+
+    handleMouseEnter = (row,col) => {
+      if (this.animating) return;
+      if (this.state.mouseClicked) {
+          let arr = this.state.grid;
+          if (this.state.selected === "start") {
+              arr[row][col].isStart = true;
+              this.setState({
+                  start_node: [row, col]
+              })
+          }
+          else if (this.state.selected === "end") {
+              arr[row][col].isEnd = true;
+              this.setState({
+                  end_node: [row, col]
+              })
+          }
+          else if (document.querySelector("input[value='build']").checked) {
+              if(!arr[row][col].isWall && !arr[row][col].isStart && !arr[row][col].isEnd) {
+                  arr[row][col].isWall = true;
+              }
+          } 
+          else {
+              if(arr[row][col].isWall){
+                  arr[row][col].isWall=false;
+              }
+          }
+
+          this.setState({
+              grid:arr,
+              mouseClicked:true
+          })
+      }
+    }
+
+    handleMouseLeave = (row, col) => {
+      if (this.animating) return;
+      let arr = this.state.grid;
+      if (this.state.selected !== "") {
+          arr[row][col].isStart = false;
+          arr[row][col].isEnd = false;
+          this.setState({
+              grid: arr
+          })
+      }
+      
+    }
+
+    handleMouseUp = () => {
+        if (this.animating) return;
+        this.setState({
+            mouseClicked: false,
+            selected:""
+        })
+    }
+
+    dijkstra = (e) => {
+        if(this.animating)return;
+        let arr = this.state.grid;
+        for (let i = 0; i < arr.length; i++){
+            for(let j=0;j<arr[0].length;j++){
+                if(document.getElementById(`node-${i}-${j}`).className==="node_path")
+                    document.getElementById(`node-${i}-${j}`).className="node_";
+                if(document.getElementById(`node-${i}-${j}`).className==="node_visited"){
+                    document.getElementById(`node-${i}-${j}`).className="node_";
+                }
+            }
+        }
+        
+        let {visited_nodes,shortestPath}=Dijkstra(this.state.grid,this.state.start_node,this.state.end_node)
+        
+        const animate=async ()=>{
+            
+        let i=0;
+        let j=0;
+        this.animating=true;
+        const animateVisited=()=>{
+            if(i===visited_nodes.length){
+                requestAnimationFrame(animatePath);
+                return;
+            }
+            arr[visited_nodes[i].row][visited_nodes[i].col].isVisited=true;
+            // this.setState({
+            //     grid:arr
+            // })
+            if(!arr[visited_nodes[i].row][visited_nodes[i].col].isStart&&!arr[visited_nodes[i].row][visited_nodes[i].col].isEnd)
+            document.getElementById(`node-${visited_nodes[i].row}-${visited_nodes[i].col}`).className="node_visited";
+            ++i;
+            requestAnimationFrame(animateVisited);
+        }
+        
+        const animatePath=()=>{
+            if(j===shortestPath.length){
+                this.setState({
+                    grid:arr,
+                    visited:visited_nodes.length,
+                    shortestPath:shortestPath.length
+                })
+                this.animating=false;
+                return;
+            }
+            arr[shortestPath[j].row][shortestPath[j].col].isShortestPath=true;
+            
+            if(!arr[shortestPath[j].row][shortestPath[j].col].isStart&&!arr[shortestPath[j].row][shortestPath[j].col].isEnd)
+            document.getElementById(`node-${shortestPath[j].row}-${shortestPath[j].col}`).className="node_path";
+            ++j;
+            
+            requestAnimationFrame(animatePath);
+        }
+        await requestAnimationFrame(animateVisited);
+        }
     }
 
     render() {
@@ -87,6 +228,10 @@ class Board extends Component {
                                 key={i}
                                 row={index}
                                 col={i}
+                                onMouseDown={(row,col)=>this.handleMouseDown(row,col)}
+                                onMouseEnter={(row,col)=>this.handleMouseEnter(row,col)}
+                                onMouseUp={()=>this.handleMouseUp()}
+                                onMouseLeave={(row,col)=>this.handleMouseLeave(row,col)}
                               />
                             )
                           })

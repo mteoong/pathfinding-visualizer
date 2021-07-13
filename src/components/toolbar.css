@@ -9,6 +9,12 @@
     padding-top: 15px;
 }
 
+.body-wrapper {
+    height: calc(100%-53px);
+    margin: 0;
+    padding: 0;
+}
+
 .toolbar-h2 {
     font-size: 2rem;
     padding: 0px;

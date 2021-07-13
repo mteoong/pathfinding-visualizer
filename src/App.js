@@ -1,6 +1,6 @@
 import React, { Component } from "react";
 import Title from "./components/Title";
-import Wrapper from "./components/Wrapper";
+import Toolbar from "./components/Toolbar";
 
 class App extends Component {
   render() {
@@ -8,7 +8,7 @@ class App extends Component {
     return (
       <div style={styles}>
         <Title/>
-        <Wrapper/>
+        <Toolbar/>
       </div>
     )
   }

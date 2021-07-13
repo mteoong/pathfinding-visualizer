@@ -1,13 +1,12 @@
 .node_start{
-    background: black;
+    background: url("../images/arrow.svg");
     background-size: cover;
 }
 .node_end{
-    background: black;
+    background: url("../images/button.svg");
     background-size: cover;
 }
 .node_wall{
-  /* background: url("../assets/asteroid.svg"); */
     animation: pulse 0.5s 1;
     background-color: #202220;
     border: 1px solid #202220;

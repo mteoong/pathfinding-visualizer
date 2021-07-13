@@ -2,12 +2,6 @@ import React, { Component } from 'react';
 import './pixel.css';
 
 class Pixel extends Component {
-    constructor(props){
-        super(props);
-        this.state={
-
-        }
-    }
     render(){
         const {
             isWall,
@@ -22,19 +16,14 @@ class Pixel extends Component {
             onMouseUp,
             onMouseLeave
         }=this.props;
-        const cName=isStart?"start":isEnd?"end":isWall?"wall":isShortestPath?"path":isVisited?"visited":"";
+        const cName = isStart ? "start" : isEnd ? "end" : isWall ? "wall" : isShortestPath ?"path" : isVisited ? "visited" : "";
         return(
-            <td className={"node_"+cName} 
-            id={`node-${row}-${col}`}
-            /*
-            onMouseDown={()=>onMouseDown(row,col)}
-            onMouseEnter={()=>onMouseEnter(row,col)}
-            onMouseUp={()=>onMouseUp()}
-            onMouseLeave={()=>onMouseLeave(row,col)}
-            */
-            // onTouchStart={()=>onMouseDown(row,col)}
-            // onTouchEnd={()=>onMouseLeave(row,col)}
-            // onTouchMove={()=>onMouseEnter(row,col)}
+            <td className = {"node_" + cName} 
+            id = {`node-${row}-${col}`}
+            onMouseDown = {() => onMouseDown(row,col)}
+            onMouseEnter = {() => onMouseEnter(row,col)}
+            onMouseUp = {() => onMouseUp()}
+            onMouseLeave = {() => onMouseLeave(row,col)}
             ></td>
         )
     }
