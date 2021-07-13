@@ -21,22 +21,16 @@ class Board extends Component {
 
     componentDidMount(){
         this.makeGrid();
-        /*Resizing
         window.addEventListener("resize",(e)=>{
             this.makeGrid();
         })
-        */
     }
 
     makeGrid=()=>{
         if(this.animating)return;
-        /*Reactive
-        const gridWrapper = document.querySelector('.board-wrapper');
-        let row_size=Math.floor((gridWrapper.offsetHeight)/27);
-        let col_size=Math.floor((gridWrapper.offsetWidth)/27);
-        */
-        let row_size = 30;
-        let col_size = 70;
+        const gridWrapper = document.querySelector('#root');
+        let row_size = Math.floor((gridWrapper.offsetHeight - 223)/25);
+        let col_size = Math.min(60, Math.floor((gridWrapper.offsetWidth - 60)/25));
         let arr=[]
         for(let i = 0; i < row_size; i++){
             let row = [];
@@ -54,10 +48,10 @@ class Board extends Component {
             }
             arr.push(row);
         }
-        let start_x= 15;
-        let start_y= 20;
-        let end_x=50;
-        let end_y=15;
+        let start_x= Math.floor(col_size / 3);
+        let start_y= Math.floor(row_size / 2);
+        let end_x= Math.floor(col_size * 2 / 3);
+        let end_y= Math.floor(row_size / 2);
         arr[start_y][start_x].isStart=true;
         arr[end_y][end_x].isEnd=true;
 
@@ -75,7 +69,7 @@ class Board extends Component {
         let tr_style = {display:"table-row"}
         return(
             <div className="board-wrapper">
-              <table>
+              <table cellSpacing="0">
                 {
                   this.state.grid.map((row,index)=>{
                     return(
