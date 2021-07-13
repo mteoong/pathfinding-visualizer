@@ -6,6 +6,7 @@ function customDropdown() {
                 this.parentNode.querySelector('.custom-option.selected').classList.remove('selected');
                 this.classList.add('selected');
                 this.closest('.custom-select').querySelector('.custom-select__trigger span').textContent = this.textContent;
+                
             }
         })
     }
@@ -13,6 +14,7 @@ function customDropdown() {
     for (const dropdown of document.querySelectorAll(".custom-select-wrapper")) {
         dropdown.addEventListener('click', function() {
             this.querySelector('.custom-select').classList.toggle('open');
+            this.querySelector('.custom-select__trigger').classList.toggle("select-arrow-active");
         })
     }
     
@@ -20,6 +22,7 @@ function customDropdown() {
         for (const select of document.querySelectorAll('.custom-select')) {
             if (!select.contains(e.target)) {
                 select.classList.remove('open');
+                select.querySelector('.custom-select__trigger').classList.remove("select-arrow-active");
             }
         }
     });

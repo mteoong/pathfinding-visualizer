@@ -1,7 +1,8 @@
 import React, { Component } from 'react';
 import './board.css';
 import Pixel from './Pixel';
-import Dijkstra from '../algorithms/Dijkstra'
+import dijkstraAlgorithm from '../algorithms/Dijkstra';
+import astar from '../algorithms/aStar';
 
 class Board extends Component {
     constructor(props){
@@ -57,8 +58,8 @@ class Board extends Component {
 
         this.setState({
             grid: arr,
-            start_node: [start_x,start_y],
-            end_node: [end_x,end_y],
+            start_node: [start_x, start_y],
+            end_node: [end_x, end_y],
             number_of_nodes: arr.length*arr[0].length,
             visited: 0,
             shortestPath: 0,
@@ -153,57 +154,60 @@ class Board extends Component {
         if(this.animating)return;
         let arr = this.state.grid;
         for (let i = 0; i < arr.length; i++){
-            for(let j=0;j<arr[0].length;j++){
-                if(document.getElementById(`node-${i}-${j}`).className==="node_path")
-                    document.getElementById(`node-${i}-${j}`).className="node_";
-                if(document.getElementById(`node-${i}-${j}`).className==="node_visited"){
-                    document.getElementById(`node-${i}-${j}`).className="node_";
+            for(let j = 0; j < arr[0].length; j++){
+                if(document.getElementById(`node-${i}-${j}`).className === "node_path")
+                    document.getElementById(`node-${i}-${j}`).className = "node_";
+                if(document.getElementById(`node-${i}-${j}`).className === "node_visited"){
+                    document.getElementById(`node-${i}-${j}`).className = "node_";
                 }
             }
         }
+
+        let {visited_nodes, shortestPath} = astar(this.state.grid, this.state.start_node, this.state.end_node)
         
-        let {visited_nodes,shortestPath}=Dijkstra(this.state.grid,this.state.start_node,this.state.end_node)
+        const animate = async () => {
+            let i = 0;
+            let j = 0;
+            this.animating = true;
+            const animateVisited = () => {
+                if (i === visited_nodes.length) {
+                    requestAnimationFrame(animatePath);
+                    return;
+                }
+                let row = visited_nodes[i].row;
+                let col = visited_nodes[i].col;
+                arr[row][col].isVisited=true;
+                // this.setState({
+                //     grid:arr
+                // })
+                if(!arr[row][col].isStart && !arr[row][col].isEnd)
+                document.getElementById(`node-${row}-${col}`).className="node_visited";
+                i++;
+                requestAnimationFrame(animateVisited);
+            }
         
-        const animate=async ()=>{
-            
-        let i=0;
-        let j=0;
-        this.animating=true;
-        const animateVisited=()=>{
-            if(i===visited_nodes.length){
+            const animatePath = () => {
+                if (j === shortestPath.length) {
+                    this.setState({
+                        grid: arr,
+                        visited: visited_nodes.length,
+                        shortestPath: shortestPath.length
+                    })
+                    this.animating=false;
+                    return;
+                }
+                let row = shortestPath[j].row;
+                let col = shortestPath[j].col;
+                arr[row][col].isShortestPath = true;
+                
+                if(!arr[row][col].isStart && !arr[row][col].isEnd)
+                document.getElementById(`node-${row}-${col}`).className="node_path";
+                j++;
                 requestAnimationFrame(animatePath);
-                return;
-            }
-            arr[visited_nodes[i].row][visited_nodes[i].col].isVisited=true;
-            // this.setState({
-            //     grid:arr
-            // })
-            if(!arr[visited_nodes[i].row][visited_nodes[i].col].isStart&&!arr[visited_nodes[i].row][visited_nodes[i].col].isEnd)
-            document.getElementById(`node-${visited_nodes[i].row}-${visited_nodes[i].col}`).className="node_visited";
-            ++i;
-            requestAnimationFrame(animateVisited);
+            }   
+            await requestAnimationFrame(animateVisited);
         }
-        
-        const animatePath=()=>{
-            if(j===shortestPath.length){
-                this.setState({
-                    grid:arr,
-                    visited:visited_nodes.length,
-                    shortestPath:shortestPath.length
-                })
-                this.animating=false;
-                return;
-            }
-            arr[shortestPath[j].row][shortestPath[j].col].isShortestPath=true;
-            
-            if(!arr[shortestPath[j].row][shortestPath[j].col].isStart&&!arr[shortestPath[j].row][shortestPath[j].col].isEnd)
-            document.getElementById(`node-${shortestPath[j].row}-${shortestPath[j].col}`).className="node_path";
-            ++j;
-            
-            requestAnimationFrame(animatePath);
-        }
-        await requestAnimationFrame(animateVisited);
-        }
+        animate();
     }
 
     render() {

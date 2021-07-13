@@ -38,7 +38,7 @@
 .custom-select-wrapper {
     position: relative;
     user-select: none;
-    width: 180px;
+    width: 200px;
     margin: auto;
     margin-bottom: 10px;
     margin-top: 10px;
@@ -134,4 +134,20 @@ label[for="build"] {
 
 input[type='radio'] { 
     transform: scale(1.1); 
+}
+
+.custom-select__trigger:after {
+    position: absolute;
+    content: "";
+    top: 17px;
+    right: 10px;
+    width: 0;
+    height: 0;
+    border: 6px solid transparent;
+    border-color: rgba(0, 0, 0, 0.856) transparent transparent transparent;
+  }
+
+.custom-select__trigger.select-arrow-active:after {
+  border-color: transparent transparent rgba(0, 0, 0, 0.856) transparent;
+  top: 10px;
 }

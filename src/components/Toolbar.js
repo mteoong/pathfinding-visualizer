@@ -37,7 +37,7 @@ class Toolbar extends Component {
                   <h2 className="toolbar-h2"> Pathfinding Algorithm </h2>
                   <div className="custom-select-wrapper">
                     <div className="custom-select">
-                      <div className="custom-select__trigger"><span className="selected">Select</span>
+                      <div className="custom-select__trigger"><span className="selected">Dijkstra's</span>
                       </div>
                       <div className="custom-options pathfinder">
                         <span className="custom-option selected" data-value="Dijkstra's">Dijkstra's</span>
@@ -53,11 +53,11 @@ class Toolbar extends Component {
                   <h2 className="toolbar-h2"> Maze Generating Algorithm </h2>
                   <div className="custom-select-wrapper">
                     <div className="custom-select">
-                          <div className="custom-select__trigger"><span className="selected">Select</span>
+                          <div className="custom-select__trigger"><span className="selected">Recursive Division</span>
                           </div>
                           <div className="custom-options mazeGenerator">
-                              <span className="custom-option selected" data-value="Random">Random</span>
-                              <span className="custom-option" data-value="Recursive Division Horizontal">Recursive Division</span>
+                              <span className="custom-option selected" data-value="Recursive Division Horizontal">Recursive Division</span>
+                              <span className="custom-option" data-value="Random">Random</span>
                               <span className="custom-option" data-value="Prim's">Prim's</span>
                           </div>
                       </div>
