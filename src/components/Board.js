@@ -155,22 +155,25 @@ class Board extends Component {
         let arr = this.state.grid;
         for (let i = 0; i < arr.length; i++){
             for(let j = 0; j < arr[0].length; j++){
-                if(document.getElementById(`node-${i}-${j}`).className === "node_path")
+                if (document.getElementById(`node-${i}-${j}`).className === "node_path") {
                     document.getElementById(`node-${i}-${j}`).className = "node_";
-                if(document.getElementById(`node-${i}-${j}`).className === "node_visited"){
+                }
+                if (document.getElementById(`node-${i}-${j}`).className === "node_visited") {
                     document.getElementById(`node-${i}-${j}`).className = "node_";
                 }
             }
         }
 
         let {visited_nodes, shortestPath} = astar(this.state.grid, this.state.start_node, this.state.end_node)
+
+        console.log(visited_nodes);
         
         const animate = async () => {
             let i = 0;
             let j = 0;
             this.animating = true;
             const animateVisited = () => {
-                if (i === visited_nodes.length) {
+                if (i == visited_nodes.length) {
                     requestAnimationFrame(animatePath);
                     return;
                 }
@@ -182,7 +185,7 @@ class Board extends Component {
                 // })
                 if(!arr[row][col].isStart && !arr[row][col].isEnd)
                 document.getElementById(`node-${row}-${col}`).className="node_visited";
-                i++;
+                ++i;
                 requestAnimationFrame(animateVisited);
             }
         
