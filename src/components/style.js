@@ -1,5 +1,9 @@
+function dropdownAndSlider() {
+    dropdown();
+    initializeSlider();
+}
 
-function customDropdown() {
+function dropdown() {
     for (const option of document.querySelectorAll(".custom-option")) {
         option.addEventListener('click', function() {
             if (!this.classList.contains('selected')) {
@@ -28,4 +32,29 @@ function customDropdown() {
     });
 }
 
-export default customDropdown;
+function initializeSlider() {
+    let slider = document.getElementById("speed");
+
+    slider.oninput = function() {
+        getSliderValue();
+    }
+}
+
+function getSliderValue() {
+    let slider = document.getElementById("speed");
+    let output = document.getElementById("speed-setting");
+    
+    if (slider.value < 10) {
+        output.innerHTML = "Giannis Freethrow"; 
+    } else if (slider.value < 30) {
+        output.innerHTML = "Slow"; 
+    } else if (slider.value < 50) {
+        output.innerHTML = "Medium"; 
+    } else if (slider.value < 70) {
+        output.innerHTML = "Fast"; 
+    } else {
+        output.innerHTML = "Very Fast"; 
+    }
+}
+
+export default dropdownAndSlider;

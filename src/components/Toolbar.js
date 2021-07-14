@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import './toolbar.css';
-import customDropdown from "./style";
+import dropdownAndSlider from "./style";
 import Board from "./Board";
 
 class Toolbar extends Component {
@@ -10,15 +10,26 @@ class Toolbar extends Component {
     }
   
     componentDidMount() {
-        customDropdown();
+      dropdownAndSlider();
     }
 
     pathfinder = () => {
         let selected = document.querySelector(".custom-options.pathfinder > .selected");
         let selectedText = selected.textContent;
+        let speed = 100 - document.querySelector('#speed').value;
+
         switch(selectedText){
             case "Dijkstra's":
-                this.child.current.dijkstra();
+                this.child.current.choosePathfinder("Dijkstra's", speed);
+                break;
+            case "A*":
+                this.child.current.choosePathfinder("Dijkstra's", speed);
+                break;
+            case "Breadth First Search":
+                this.child.current.choosePathfinder("bfs", speed);
+                break;
+            case "Depth First Search":
+                this.child.current.choosePathfinder("dfs", speed);
                 break;
             default:
               return;
@@ -75,7 +86,14 @@ class Toolbar extends Component {
                 </div>
                 <div>
                   <h2 className="toolbar-h2"> Clear </h2>
-                      <div className="clear"> Clear Board </div>
+                    <div className="clear"> Clear Board </div>
+                </div>
+                <div>
+                  <h2 className="toolbar-h2"> Speed </h2>
+                  <div class="slidecontainer">
+                    <input type="range" min="10" max="200" defaultValue="40" class="slider" id="speed"></input>
+                    <h3 id="speed-setting"> Fast </h3>
+                  </div>
                 </div>
               </div>
             <Board ref={this.child} />

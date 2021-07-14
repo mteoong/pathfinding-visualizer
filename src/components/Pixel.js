@@ -16,9 +16,16 @@ class Pixel extends Component {
             onMouseUp,
             onMouseLeave
         }=this.props;
-        const cName = isStart ? "start" : isEnd ? "end" : isWall ? "wall" : isShortestPath ?"path" : isVisited ? "visited" : "";
+        let cName = isStart ? "start" : isEnd ? "end" : isWall ? "wall" : isShortestPath ?"path" : isVisited ? "visited" : "";
+        cName = "node_" + cName;
+        if (isStart && isShortestPath) {
+            cName = "node_start node_path";
+        } else if (isEnd && isShortestPath) {
+            cName = "node_end node_path";
+        }
+
         return(
-            <td className = {"node_" + cName} 
+            <td className = {cName} 
             id = {`node-${row}-${col}`}
             onMouseDown = {() => onMouseDown(row,col)}
             onMouseEnter = {() => onMouseEnter(row,col)}

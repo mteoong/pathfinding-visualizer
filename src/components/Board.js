@@ -2,7 +2,9 @@ import React, { Component } from 'react';
 import './board.css';
 import Pixel from './Pixel';
 import dijkstraAlgorithm from '../algorithms/Dijkstra';
-import astar from '../algorithms/aStar';
+import aStar from '../algorithms/aStar';
+import bfs from '../algorithms/bfs';
+import dfs from '../algorithms/dfs';
 
 class Board extends Component {
     constructor(props){
@@ -68,70 +70,66 @@ class Board extends Component {
     }
 
     handleMouseDown = (row, col) => {
-      if (this.animating) return;
-      let arr = this.state.grid;
-      if (arr[row][col].isStart) {
-          this.setState({
-              selected: "start"
-          });
-      } else if (arr[row][col].isEnd) {
-          this.setState({
-              selected: "end"
-          });
-      }
+        if (this.animating) return;
+        let arr = this.state.grid;
+        if (arr[row][col].isStart) {
+            this.setState({
+                selected: "start"
+            });
+        } else if (arr[row][col].isEnd) {
+            this.setState({
+                selected: "end"
+            });
+        }
 
-      if (document.querySelector("input[value='build']").checked) {
-          if(!arr[row][col].isWall && !arr[row][col].isStart && !arr[row][col].isEnd) {
-              arr[row][col].isWall = true;
-          }
-      } else {
-          if(arr[row][col].isWall){
-              arr[row][col].isWall = false;
-          }
-      }
+        if (document.querySelector("input[value='build']").checked) {
+            if(!arr[row][col].isWall && !arr[row][col].isStart && !arr[row][col].isEnd) {
+                arr[row][col].isWall = true;
+            }
+        } else {
+            if(arr[row][col].isWall){
+                arr[row][col].isWall = false;
+            }
+        }
 
-      this.setState({
-          grid: arr,
-          mouseClicked: true
-      })
+        this.setState({
+            grid: arr,
+            mouseClicked: true
+        })
     }
 
     handleMouseEnter = (row,col) => {
-      if (this.animating) return;
-      if (this.state.mouseClicked) {
-          let arr = this.state.grid;
-          if (this.state.selected === "start") {
-              arr[row][col].isStart = true;
-              this.setState({
-                  start_node: [row, col]
-              })
-          }
-          else if (this.state.selected === "end") {
-              arr[row][col].isEnd = true;
-              this.setState({
-                  end_node: [row, col]
-              })
-          }
-          else if (document.querySelector("input[value='build']").checked) {
-              if(!arr[row][col].isWall && !arr[row][col].isStart && !arr[row][col].isEnd) {
-                  arr[row][col].isWall = true;
-              }
-          } 
-          else {
-              if(arr[row][col].isWall){
-                  arr[row][col].isWall=false;
-              }
-          }
+        if (this.animating) return;
+        if (this.state.mouseClicked) {
+            let arr = this.state.grid;
+            if (this.state.selected === "start") {
+                arr[row][col].isStart = true;
+                this.setState({
+                    start_node: [row, col]
+                })
+            }
+            else if (this.state.selected === "end") {
+                arr[row][col].isEnd = true;
+                this.setState({
+                    end_node: [row, col]
+                })
+            }
+            else if (document.querySelector("input[value='build']").checked) {
+                if(!arr[row][col].isWall && !arr[row][col].isStart && !arr[row][col].isEnd) {
+                    arr[row][col].isWall = true;
+                }
+            } 
+            else {
+                if(arr[row][col].isWall){
+                    arr[row][col].isWall=false;
+                }
+            }
 
-          this.setState({
-              grid:arr,
-              mouseClicked:true
-          })
-
-          if (this.instantAnimations) {
-              this.instantDijkstra();
-          }
-      }
+            this.setState({
+                grid:arr,
+                mouseClicked:true
+            })
+        }
     }
 
     handleMouseLeave = (row, col) => {
@@ -170,99 +168,65 @@ class Board extends Component {
         }
     }
 
-    instantDijkstra = () => {
-        if(this.animating)return;
-        let arr = this.state.grid;
-        this.clearPathfinder();
-        let {visited_nodes, shortestPath} = dijkstraAlgorithm(this.state.grid, this.state.start_node, this.state.end_node)
-
-        const animate = async () => {
-            const instantAnimation = () => {
-                for (let i = 0; i < visited_nodes.length; i++) {
-                    let row = visited_nodes[i].row;
-                    let col = visited_nodes[i].col;
-                    arr[row][col].isVisited=true;
-
-                    if(!arr[row][col].isStart && !arr[row][col].isEnd) {
-                        document.getElementById(`node-${row}-${col}`).className="node_visited_i";
-                    }
-                }
-                for (let j = 0; j < shortestPath.length; j++) {
-                    let row = shortestPath[j].row;
-                    let col = shortestPath[j].col;
-                    arr[row][col].isShortestPath = true;
-
-                    if (arr[row][col].isStart) {
-                        document.getElementById(`node-${row}-${col}`).className="node_path_i node_start";
-                    } else if (arr[row][col].isEnd) {
-                        document.getElementById(`node-${row}-${col}`).className="node_path_i node_end";
-                    } else {
-                        document.getElementById(`node-${row}-${col}`).className="node_path_i";
-                    }
-                }
-                this.setState({
-                    grid: arr,
-                    visited: visited_nodes.length,
-                    shortestPath: shortestPath.length
-                })
-            }
-            await requestAnimationFrame(instantAnimation);
+    choosePathfinder = (pathfinder, speed) => {
+        switch(pathfinder) {
+            case "Dijkstra's":
+                this.applyPathfinder(dijkstraAlgorithm, speed);
+                break;
+            case "A*":
+                this.applyPathfinder(aStar, speed);
+                break;
+            case "bfs":
+                this.applyPathfinder(bfs, speed);
+                break;
+            case "dfs":
+                this.applyPathfinder(dfs, speed);
+                break;
+            default:
+                return;
         }
-        animate();
     }
 
-    dijkstra = () => {
-        if(this.animating)return;
+    applyPathfinder = (pathfindingFunction, speed) => {
+        if (this.animating) return;
         let arr = this.state.grid;
         this.clearPathfinder();
+        let pathSpeed = speed;
+        let visitSpeed = Math.floor(speed/5);
 
-        let {visited_nodes, shortestPath} = dijkstraAlgorithm(this.state.grid, this.state.start_node, this.state.end_node)
+        let {visited_nodes, shortestPath} = pathfindingFunction(this.state.grid, this.state.start_node, this.state.end_node);
         
         const animate = async () => {
-            let i = 0;
-            let j = 0;
             this.animating = true;
-            const animateVisited = () => {
-                if (i === visited_nodes.length) {
-                    requestAnimationFrame(animatePath);
-                    return;
-                }
-                let row = visited_nodes[i].row;
-                let col = visited_nodes[i].col;
-                arr[row][col].isVisited=true;
 
-                if(!arr[row][col].isStart && !arr[row][col].isEnd)
-                document.getElementById(`node-${row}-${col}`).className="node_visited";
-                i++;
-                requestAnimationFrame(animateVisited);
-            }
-        
             const animatePath = () => {
-                if (j === shortestPath.length) {
-                    this.setState({
-                        grid: arr,
-                        visited: visited_nodes.length,
-                        shortestPath: shortestPath.length
-                    })
-                    this.animating=false;
+                for (let j = 0; j < shortestPath.length; j++) {
+                    setTimeout(() => {
+                      const node = shortestPath[j];
+                      document.getElementById(`node-${node.row}-${node.col}`).className =
+                        'node_path';
+                    }, pathSpeed * j);
+                }
+            }
+
+            for (let i = 0; i <= visited_nodes.length; i++) {
+                if (i === visited_nodes.length) {
+                    setTimeout(() => {
+                        animatePath();
+                      }, visitSpeed * i);
                     return;
                 }
-                let row = shortestPath[j].row;
-                let col = shortestPath[j].col;
-                arr[row][col].isShortestPath = true;
-                if (arr[row][col].isStart) {
-                    document.getElementById(`node-${row}-${col}`).className="node_path node_start";
-                } else if (arr[row][col].isEnd) {
-                    document.getElementById(`node-${row}-${col}`).className="node_path node_end";
-                } else {
-                    document.getElementById(`node-${row}-${col}`).className="node_path";
-                }
-                j++;
-                requestAnimationFrame(animatePath);
+                
+                setTimeout(() => {
+                    const node = visited_nodes[i];
+                    arr[node.row][node.col].isVisited = true;
+                    document.getElementById(`node-${node.row}-${node.col}`).className =
+                      'node_visited';
+                }, visitSpeed * i);
             }
-            await requestAnimationFrame(animateVisited);
         }   
         animate();
+        this.animating=false;
         this.instantAnimations=true;
     }
 
