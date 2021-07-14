@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import './board.css';
 import Pixel from './Pixel';
-import dijkstraAlgorithm from '../algorithms/Dijkstra';
+import dijkstraAlgorithm from '../algorithms/dijkstra';
 import aStar from '../algorithms/aStar';
 import bfs from '../algorithms/bfs';
 import dfs from '../algorithms/dfs';
@@ -250,7 +250,7 @@ class Board extends Component {
             setTimeout(() => {
                 this.animating = false;
                 this.instantAnimation = true;
-            }, 6000);
+            }, visited_nodes.length * visitSpeed + shortestPath.length * pathSpeed + 500);
         });
     }
 
