@@ -16,7 +16,7 @@ class Toolbar extends Component {
     pathfinder = () => {
         let selected = document.querySelector(".custom-options.pathfinder > .selected");
         let selectedText = selected.textContent;
-        let speed = 100 - document.querySelector('#speed').value;
+        let speed = document.querySelector('#speed').value;
 
         switch(selectedText){
             case "Dijkstra's":

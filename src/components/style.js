@@ -44,16 +44,16 @@ function getSliderValue() {
     let slider = document.getElementById("speed");
     let output = document.getElementById("speed-setting");
     
-    if (slider.value < 10) {
-        output.innerHTML = "Giannis Freethrow"; 
-    } else if (slider.value < 30) {
-        output.innerHTML = "Slow"; 
+    if (slider.value < 20) {
+        output.innerHTML = "Very fast"; 
     } else if (slider.value < 50) {
-        output.innerHTML = "Medium"; 
-    } else if (slider.value < 70) {
         output.innerHTML = "Fast"; 
+    } else if (slider.value < 100) {
+        output.innerHTML = "Medium"; 
+    } else if (slider.value < 180) {
+        output.innerHTML = "Slow"; 
     } else {
-        output.innerHTML = "Very Fast"; 
+        output.innerHTML = "Giannis Freethrow"; 
     }
 }
 
