@@ -30,10 +30,16 @@
   animation-direction: alternate;
 }
 
-.node_start.node_visited, 
-.node_end.node_visited,
-.node_visited_i {
+.node_visited.instant {
   background-color: rgba(4, 0, 255, 0.5);
+  animation-duration: 0;
+  animation: none;
+}
+
+.node_start.node_visited, 
+.node_end.node_visited {
+  background-color: rgba(4, 0, 255, 0.5);
+  animation: none;
 }
 
 @keyframes visited{
@@ -69,18 +75,25 @@ animation-fill-mode: none;
 animation-play-state: running;
 }
 
-.node_start.node_path, 
-.node_end.node_path,
-.node_path_i {
+.node_path.instant, 
+.node_start.node_path.instant,
+.node_end.node_path.instant {
   background-color: yellow;
-  animation-name: path_anime_special;
-  animation-duration: 1.2s;
-  animation-timing-function: ease-out;
-  animation-delay: 0s;
-  animation-direction: alternate;
-  /* animation-iteration-count: infinite; */
-  animation-fill-mode: none;
-  animation-play-state: running;
+  animation-duration: 0;
+  animation: none;
+  border: none;
+}
+
+.node_start.node_path, 
+.node_end.node_path {
+    background-color: yellow;
+    animation-name: path_anime_special;
+    animation-duration: 1.2s;
+    animation-timing-function: ease-out;
+    animation-delay: 0s;
+    animation-direction: alternate;
+    animation-fill-mode: none;
+    animation-play-state: running;
 }
 
 @keyframes path_anime{

@@ -19,8 +19,9 @@ class Board extends Component {
             shortestPath:0,
             number_of_nodes:0,
         }
-        this.animating=false;
-        this.instantAnimations=false;
+        this.animating = false;
+        this.instantAnimation = false;
+        this.pathfindAlgorithm = () => {};
     }
 
     componentDidMount(){
@@ -31,7 +32,9 @@ class Board extends Component {
     }
 
     makeGrid = () => {
-        if (this.animating) return;
+        if (this.animating) {
+            return;
+        }
         const gridWrapper = document.querySelector('#root');
         let row_size = Math.floor((gridWrapper.offsetHeight - 223)/27);
         let col_size = Math.min(60, Math.floor((gridWrapper.offsetWidth - 60)/27));
@@ -40,14 +43,15 @@ class Board extends Component {
             let row = [];
             for(let j = 0; j < col_size; j++){
                 row.push({
-                    value:1,
-                    row:i,
-                    col:j,
-                    isVisited:false,
-                    isShortestPath:false,
-                    isWall:false,
-                    isStart:false,
-                    isEnd:false,
+                    value: 1,
+                    row: i,
+                    col: j,
+                    isVisited: false,
+                    isShortestPath: false,
+                    isWall: false,
+                    isStart: false,
+                    isEnd: false,
+                    instant: false,
                 });
             }
             arr.push(row);
@@ -70,7 +74,9 @@ class Board extends Component {
     }
 
     handleMouseDown = (row, col) => {
-        if (this.animating) return;
+        if (this.animating) {
+            return;
+        }
         let arr = this.state.grid;
         if (arr[row][col].isStart) {
             this.setState({
@@ -80,26 +86,32 @@ class Board extends Component {
             this.setState({
                 selected: "end"
             });
-        }
-
-        if (document.querySelector("input[value='build']").checked) {
-            if(!arr[row][col].isWall && !arr[row][col].isStart && !arr[row][col].isEnd) {
-                arr[row][col].isWall = true;
-            }
         } else {
-            if(arr[row][col].isWall){
-                arr[row][col].isWall = false;
+            if (document.querySelector("input[value='build']").checked) {
+                if(!arr[row][col].isWall && !arr[row][col].isStart && !arr[row][col].isEnd) {
+                    arr[row][col].isWall = true;
+                }
+            } else {
+                if(arr[row][col].isWall){
+                    arr[row][col].isWall = false;
+                }
             }
         }
 
         this.setState({
             grid: arr,
             mouseClicked: true
+        }, () => {
+            if (this.instantAnimation) {
+                this.instantPathfinder();
+            }
         })
     }
 
     handleMouseEnter = (row,col) => {
-        if (this.animating) return;
+        if (this.animating) {
+            return;
+        }
         if (this.state.mouseClicked) {
             let arr = this.state.grid;
             if (this.state.selected === "start") {
@@ -121,32 +133,38 @@ class Board extends Component {
             } 
             else {
                 if(arr[row][col].isWall){
-                    arr[row][col].isWall=false;
+                    arr[row][col].isWall = false;
                 }
             }
-
             this.setState({
-                grid:arr,
-                mouseClicked:true
+                grid: arr,
+                mouseClicked: true
+            }, () => {
+                if (this.instantAnimation) {
+                    this.instantPathfinder();
+                }
             })
         }
     }
 
     handleMouseLeave = (row, col) => {
-      if (this.animating) return;
-      let arr = this.state.grid;
-      if (this.state.selected !== "") {
-          arr[row][col].isStart = false;
-          arr[row][col].isEnd = false;
-          this.setState({
-              grid: arr
-          })
-      }
-      
+        if (this.animating) {
+            return;
+        }
+        let arr = this.state.grid;
+        if (this.state.selected !== "") {
+            arr[row][col].isStart = false;
+            arr[row][col].isEnd = false;
+            this.setState({
+                grid: arr
+            })
+        }
     }
 
     handleMouseUp = () => {
-        if (this.animating) return;
+        if (this.animating) {
+            return;
+        }
         this.setState({
             mouseClicked: false,
             selected:""
@@ -158,12 +176,9 @@ class Board extends Component {
         for (let i = 0; i < arr.length; i++){
             for(let j = 0; j < arr[0].length; j++){
                 let element = document.getElementById(`node-${i}-${j}`);
-                if (element.classList.contains("node_path")) {
-                    element.classList.remove("node_path");
-                }
-                if (element.classList.contains("node_visited")) {
-                    element.classList.remove("node_visited");
-                }
+                element.classList.remove("node_path");
+                element.classList.remove("node_visited");
+                element.classList.remove("instant");
             }
         }
     }
@@ -171,24 +186,27 @@ class Board extends Component {
     choosePathfinder = (pathfinder, speed) => {
         switch(pathfinder) {
             case "Dijkstra's":
-                this.applyPathfinder(dijkstraAlgorithm, speed);
+                this.pathfindAlgorithm = dijkstraAlgorithm;
                 break;
             case "A*":
-                this.applyPathfinder(aStar, speed);
+                this.pathfindAlgorithm = aStar;
                 break;
             case "bfs":
-                this.applyPathfinder(bfs, speed);
+                this.pathfindAlgorithm = bfs;
                 break;
             case "dfs":
-                this.applyPathfinder(dfs, speed);
+                this.pathfindAlgorithm = dfs;
                 break;
             default:
-                return;
+                break;
         }
+        this.applyPathfinder(this.pathfindAlgorithm, speed);
     }
 
     applyPathfinder = (pathfindingFunction, speed) => {
-        if (this.animating) return;
+        console.log('hi');
+        this.instantAnimation = false;
+        this.animating = true;
         let arr = this.state.grid;
         this.clearPathfinder();
         let pathSpeed = speed;
@@ -197,12 +215,11 @@ class Board extends Component {
         let {visited_nodes, shortestPath} = pathfindingFunction(this.state.grid, this.state.start_node, this.state.end_node);
         
         const animate = async () => {
-            this.animating = true;
-
             const animatePath = () => {
                 for (let j = 0; j < shortestPath.length; j++) {
                     setTimeout(() => {
                       const node = shortestPath[j];
+                      arr[node.row][node.col].isShortestPath = true;
                       document.getElementById(`node-${node.row}-${node.col}`).classList.add('node_path');
                     }, pathSpeed * j);
                 }
@@ -222,10 +239,50 @@ class Board extends Component {
                     document.getElementById(`node-${node.row}-${node.col}`).classList.add('node_visited');
                 }, visitSpeed * i);
             }
+            
+            this.setState({
+                grid:arr,
+                visited:visited_nodes.length,
+                shortestPath:shortestPath.length
+            })
         }   
-        animate();
-        this.animating=false;
-        this.instantAnimations=true;
+        animate().then(()=> {
+            setTimeout(() => {
+                this.animating = false;
+                this.instantAnimation = true;
+            }, 6000);
+        });
+    }
+
+    instantPathfinder = () => {
+        if (this.animating) {
+            return;
+        }
+        let arr = this.state.grid;
+        this.clearPathfinder();
+
+        let {visited_nodes, shortestPath} = this.pathfindAlgorithm(this.state.grid, this.state.start_node, this.state.end_node);
+        console.log(visited_nodes);
+
+        for (let i = 0; i < visited_nodes.length; i++) {            
+            let node = visited_nodes[i];
+            arr[node.row][node.col].isVisited = true;
+            arr[node.row][node.col].instant = true;
+            document.getElementById(`node-${node.row}-${node.col}`).classList.add('node_visited', 'instant');
+        }   
+
+        for (let j = 0; j < shortestPath.length; j++) {
+            let node = shortestPath[j];
+            arr[node.row][node.col].isShortestPath = true;
+            arr[node.row][node.col].instant = true;
+            document.getElementById(`node-${node.row}-${node.col}`).classList.add('node_path', 'instant');
+        }
+
+        this.setState({
+            grid:arr,
+            visited:visited_nodes.length,
+            shortestPath:shortestPath.length
+        })
     }
 
     render() {
@@ -247,6 +304,7 @@ class Board extends Component {
                                 isEnd={element.isEnd}
                                 isVisited={element.isVisited}
                                 isShortestPath={element.isShortestPath}
+                                instant={element.instant}
                                 key={i}
                                 row={index}
                                 col={i}

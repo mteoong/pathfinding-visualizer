@@ -14,7 +14,8 @@ class Pixel extends Component {
             col,
             onMouseEnter,
             onMouseUp,
-            onMouseLeave
+            onMouseLeave,
+            instant
         } = this.props;
         let cName = isStart ? "start" : isEnd ? "end" : isWall ? "wall" : isShortestPath ?"path" : isVisited ? "visited" : "";
         cName = "node_" + cName;
@@ -26,6 +27,9 @@ class Pixel extends Component {
             cName = "node_start node_visited";
         } else if (isEnd && isVisited) {
             cName = "node_end node_visited";
+        }
+        if (instant) {
+            cName += " instant";
         }
 
         return(

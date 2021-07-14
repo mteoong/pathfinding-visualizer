@@ -23,7 +23,7 @@ class Toolbar extends Component {
                 this.child.current.choosePathfinder("Dijkstra's", speed);
                 break;
             case "A*":
-                this.child.current.choosePathfinder("Dijkstra's", speed);
+                this.child.current.choosePathfinder("A*", speed);
                 break;
             case "Breadth First Search":
                 this.child.current.choosePathfinder("bfs", speed);
