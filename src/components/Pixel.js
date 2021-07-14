@@ -15,13 +15,17 @@ class Pixel extends Component {
             onMouseEnter,
             onMouseUp,
             onMouseLeave
-        }=this.props;
+        } = this.props;
         let cName = isStart ? "start" : isEnd ? "end" : isWall ? "wall" : isShortestPath ?"path" : isVisited ? "visited" : "";
         cName = "node_" + cName;
         if (isStart && isShortestPath) {
             cName = "node_start node_path";
         } else if (isEnd && isShortestPath) {
             cName = "node_end node_path";
+        } else if (isStart && isVisited) {
+            cName = "node_start node_visited";
+        } else if (isEnd && isVisited) {
+            cName = "node_end node_visited";
         }
 
         return(

@@ -203,8 +203,7 @@ class Board extends Component {
                 for (let j = 0; j < shortestPath.length; j++) {
                     setTimeout(() => {
                       const node = shortestPath[j];
-                      document.getElementById(`node-${node.row}-${node.col}`).className =
-                        'node_path';
+                      document.getElementById(`node-${node.row}-${node.col}`).classList.add('node_path');
                     }, pathSpeed * j);
                 }
             }
@@ -220,8 +219,7 @@ class Board extends Component {
                 setTimeout(() => {
                     const node = visited_nodes[i];
                     arr[node.row][node.col].isVisited = true;
-                    document.getElementById(`node-${node.row}-${node.col}`).className =
-                      'node_visited';
+                    document.getElementById(`node-${node.row}-${node.col}`).classList.add('node_visited');
                 }, visitSpeed * i);
             }
         }   
