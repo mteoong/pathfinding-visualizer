@@ -18,6 +18,7 @@ class Board extends Component {
             number_of_nodes:0,
         }
         this.animating=false;
+        this.instantAnimations=false;
     }
 
     componentDidMount(){
@@ -49,18 +50,18 @@ class Board extends Component {
             }
             arr.push(row);
         }
-        let start_x = Math.floor(col_size/ 3);
-        let start_y = Math.floor((row_size - 1) / 2);
-        let end_x = Math.floor(col_size * 2 / 3);
-        let end_y = Math.floor((row_size - 1) / 2);
-        arr[start_y][start_x].isStart=true;
-        arr[end_y][end_x].isEnd=true;
+        let start_x = Math.floor((row_size - 1) / 2);
+        let start_y = Math.floor(col_size/ 3);
+        let end_x = Math.floor((row_size - 1) / 2);
+        let end_y = Math.floor(col_size * 2 / 3);
+        arr[start_x][start_y].isStart = true;
+        arr[end_x][end_y].isEnd = true;
 
         this.setState({
             grid: arr,
             start_node: [start_x, start_y],
             end_node: [end_x, end_y],
-            number_of_nodes: arr.length*arr[0].length,
+            number_of_nodes: arr.length * arr[0].length,
             visited: 0,
             shortestPath: 0,
         })
@@ -126,6 +127,10 @@ class Board extends Component {
               grid:arr,
               mouseClicked:true
           })
+
+          if (this.instantAnimations) {
+              this.instantDijkstra();
+          }
       }
     }
 
@@ -150,42 +155,85 @@ class Board extends Component {
         })
     }
 
-    dijkstra = (e) => {
-        if(this.animating)return;
+    clearPathfinder = () => {
         let arr = this.state.grid;
         for (let i = 0; i < arr.length; i++){
             for(let j = 0; j < arr[0].length; j++){
-                if (document.getElementById(`node-${i}-${j}`).className === "node_path") {
-                    document.getElementById(`node-${i}-${j}`).className = "node_";
+                let element = document.getElementById(`node-${i}-${j}`);
+                if (element.classList.contains("node_path")) {
+                    element.classList.remove("node_path");
                 }
-                if (document.getElementById(`node-${i}-${j}`).className === "node_visited") {
-                    document.getElementById(`node-${i}-${j}`).className = "node_";
+                if (element.classList.contains("node_visited")) {
+                    element.classList.remove("node_visited");
                 }
             }
         }
+    }
 
-        let {visited_nodes, shortestPath} = astar(this.state.grid, this.state.start_node, this.state.end_node)
+    instantDijkstra = () => {
+        if(this.animating)return;
+        let arr = this.state.grid;
+        this.clearPathfinder();
+        let {visited_nodes, shortestPath} = dijkstraAlgorithm(this.state.grid, this.state.start_node, this.state.end_node)
 
-        console.log(visited_nodes);
+        const animate = async () => {
+            const instantAnimation = () => {
+                for (let i = 0; i < visited_nodes.length; i++) {
+                    let row = visited_nodes[i].row;
+                    let col = visited_nodes[i].col;
+                    arr[row][col].isVisited=true;
+
+                    if(!arr[row][col].isStart && !arr[row][col].isEnd) {
+                        document.getElementById(`node-${row}-${col}`).className="node_visited_i";
+                    }
+                }
+                for (let j = 0; j < shortestPath.length; j++) {
+                    let row = shortestPath[j].row;
+                    let col = shortestPath[j].col;
+                    arr[row][col].isShortestPath = true;
+
+                    if (arr[row][col].isStart) {
+                        document.getElementById(`node-${row}-${col}`).className="node_path_i node_start";
+                    } else if (arr[row][col].isEnd) {
+                        document.getElementById(`node-${row}-${col}`).className="node_path_i node_end";
+                    } else {
+                        document.getElementById(`node-${row}-${col}`).className="node_path_i";
+                    }
+                }
+                this.setState({
+                    grid: arr,
+                    visited: visited_nodes.length,
+                    shortestPath: shortestPath.length
+                })
+            }
+            await requestAnimationFrame(instantAnimation);
+        }
+        animate();
+    }
+
+    dijkstra = () => {
+        if(this.animating)return;
+        let arr = this.state.grid;
+        this.clearPathfinder();
+
+        let {visited_nodes, shortestPath} = dijkstraAlgorithm(this.state.grid, this.state.start_node, this.state.end_node)
         
         const animate = async () => {
             let i = 0;
             let j = 0;
             this.animating = true;
             const animateVisited = () => {
-                if (i == visited_nodes.length) {
+                if (i === visited_nodes.length) {
                     requestAnimationFrame(animatePath);
                     return;
                 }
                 let row = visited_nodes[i].row;
                 let col = visited_nodes[i].col;
                 arr[row][col].isVisited=true;
-                // this.setState({
-                //     grid:arr
-                // })
+
                 if(!arr[row][col].isStart && !arr[row][col].isEnd)
                 document.getElementById(`node-${row}-${col}`).className="node_visited";
-                ++i;
+                i++;
                 requestAnimationFrame(animateVisited);
             }
         
@@ -202,15 +250,20 @@ class Board extends Component {
                 let row = shortestPath[j].row;
                 let col = shortestPath[j].col;
                 arr[row][col].isShortestPath = true;
-                
-                if(!arr[row][col].isStart && !arr[row][col].isEnd)
-                document.getElementById(`node-${row}-${col}`).className="node_path";
+                if (arr[row][col].isStart) {
+                    document.getElementById(`node-${row}-${col}`).className="node_path node_start";
+                } else if (arr[row][col].isEnd) {
+                    document.getElementById(`node-${row}-${col}`).className="node_path node_end";
+                } else {
+                    document.getElementById(`node-${row}-${col}`).className="node_path";
+                }
                 j++;
                 requestAnimationFrame(animatePath);
-            }   
+            }
             await requestAnimationFrame(animateVisited);
-        }
+        }   
         animate();
+        this.instantAnimations=true;
     }
 
     render() {

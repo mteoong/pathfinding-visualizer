@@ -75,7 +75,7 @@ class Toolbar extends Component {
                 </div>
                 <div>
                   <h2 className="toolbar-h2"> Clear </h2>
-                      <div className="clear"> Clear Walls </div>
+                      <div className="clear"> Clear Board </div>
                 </div>
               </div>
             <Board ref={this.child} />

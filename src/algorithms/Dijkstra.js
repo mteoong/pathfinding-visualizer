@@ -1,12 +1,10 @@
 import PriorityQueue from "js-priority-queue";
 
-function isInsideGrid(i,j,grid)
-    { 
+function isInsideGrid(i,j,grid) { 
         return (i >= 0 && i < grid.length && j >= 0 && j < grid[0].length); 
-    } 
+} 
 
 const dijkstraAlgorithm = (grid, startNode, endNode) => {
-    
     let arr = grid;
     let visited_nodes = [];
     let shortestPath = [];
@@ -40,7 +38,7 @@ const dijkstraAlgorithm = (grid, startNode, endNode) => {
             let x=cell.row+dx[i];
             let y=cell.col+dy[i];
             if(!isInsideGrid(x,y,arr))continue;
-            if(!arr[x][y].isVisited&&(!arr[x][y].isWall||(x==end_node[0]&&y==end_node[1]))){
+            if(!arr[x][y].isVisited&&(!arr[x][y].isWall||(x===end_node[0]&&y===end_node[1]))){
                 if(x===end_node[0]&&y===end_node[1]){
                     arr[x][y].isVisited=true;
                     arr[x][y].prevNode=arr[cell.row][cell.col];
