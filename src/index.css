@@ -1,7 +1,9 @@
 html, body {
     height: 100vh;
     max-height: 100vh;
+    min-height: 300px;
     width: 100%;
+    min-width: 550px;
     font-size: 62.5%;
     padding: 0px;
     margin: 0px;

@@ -53,7 +53,7 @@ function getSliderValue() {
     } else if (slider.value < 180) {
         output.innerHTML = "Slow"; 
     } else {
-        output.innerHTML = "Giannis Freethrow"; 
+        output.innerHTML = "Very Slow"; 
     }
 }
 

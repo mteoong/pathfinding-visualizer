@@ -75,20 +75,24 @@ class Toolbar extends Component {
                   </div>
                   <div className="run" onClick={this.mazeGenerator}> Run! </div>
                 </div>
-                <div>
+                <div className="marker-div">
                   <h2 className="toolbar-h2"> Select Marking Tool </h2>
                   <form className="marking-tool">
-                    <input type="radio" id="build" name="marker" value="build" defaultChecked={true}/>
-                    <label htmlFor="build"> Build Walls </label>
-                    <input type="radio" id="erase" name="marker" value="erase"/>
-                    <label htmlFor="erase"> Erase Walls </label>
+                    <label className="build">
+                      <input type="radio" id="build" name="marker" value="build" defaultChecked={true}/>
+                      Build Walls
+                    </label>
+                    <label>
+                      <input type="radio" id="erase" name="marker" value="erase"/>
+                      Erase Walls
+                    </label>
                   </form>
                 </div>
                 <div>
                   <h2 className="toolbar-h2"> Clear </h2>
                     <div className="clear"> Clear Board </div>
                 </div>
-                <div>
+                <div className="speed-div">
                   <h2 className="toolbar-h2"> Speed </h2>
                   <div class="slidecontainer">
                     <input type="range" min="10" max="200" defaultValue="40" class="slider" id="speed"></input>

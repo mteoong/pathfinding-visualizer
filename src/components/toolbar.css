@@ -113,7 +113,7 @@
     padding: 15px;
 }
 
-label[for="build"] {
+label.build {
     padding-right: 20px;
 }
 
@@ -187,4 +187,52 @@ input[type='radio'] {
     border-radius: 50%;
     background: #04AA6D;
     cursor: pointer;
+}
+
+@media all and (max-width: 1025px) {
+    .toolbar-h2 {
+        font-size: 1.7rem;
+        padding: 0px;
+        margin: 3px;
+    }
+    
+    form.marking-tool {
+        display: flex;
+        flex-direction: column;
+        margin: 0px;
+    }
+
+    label.build, label {
+        padding: 0px;
+        margin-bottom: 10px;
+        width: auto;
+    }
+
+    .slidecontainer {
+        max-width: 100px;
+        margin: none;
+    }
+}
+
+@media all and (max-width: 860px) {
+    .toolbar-h2 {
+        font-size: 1.7rem;
+        padding: 0px;
+        margin: 3px;
+    }
+    
+    .marker-div {
+        display: none;
+    }
+
+    .speed-div {
+        display: none;
+    }
+}
+
+#speed-setting {
+    font-weight: 400;
+    font-size: 1.6rem;
+    padding: 0;
+    margin: 10px;
 }
