@@ -31,7 +31,6 @@ const aStar = (grid, startNode, endNode) => {
         if (arr[node.row][node.col].isVisited) continue;
         arr[node.row][node.col].isVisited = true;
         visited_nodes.push(node);
-        console.log(node.distance);
         let found = false;
         for (let i = 0; i < 4; i++){
             let x = node.row + dx[i];
@@ -40,6 +39,7 @@ const aStar = (grid, startNode, endNode) => {
             if(!arr[x][y].isVisited && !arr[x][y].isWall){
                 if (arr[x][y].isEnd){
                     arr[x][y].isVisited = true;
+                    visited_nodes.push(arr[x][y]);
                     arr[x][y].prevNode = arr[node.row][node.col];
                     let currentNode = arr[x][y];
                     while (currentNode !== null) {
@@ -53,8 +53,6 @@ const aStar = (grid, startNode, endNode) => {
                     found = true;
                     break;
                 }
-                let xChange = Math.abs(x - endNode[0]);
-                let yChange = Math.abs(y - endNode[1]);
                 arr[x][y].heur = Math.sqrt(Math.pow(x-endNode[0], 2) + Math.pow(y-endNode[1], 2));
 
                 if (node.distance + 1 < arr[x][y].distance) {

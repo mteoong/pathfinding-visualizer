@@ -40,6 +40,7 @@ const dijkstra = (grid, startNode, endNode) => {
             if(!arr[x][y].isVisited && !arr[x][y].isWall){
                 if (arr[x][y].isEnd){
                     arr[x][y].isVisited = true;
+                    visited_nodes.push(arr[x][y]);
                     arr[x][y].prevNode = arr[node.row][node.col];
                     let currentNode = arr[x][y];
                     while (currentNode !== null) {

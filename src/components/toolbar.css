@@ -212,6 +212,13 @@ input[type='radio'] {
         max-width: 100px;
         margin: none;
     }
+
+    #description_hud,
+    #visited_hud,
+    #shortest_hud {
+        margin: 0px 10px;
+        padding: 5px;
+    }
 }
 
 @media all and (max-width: 860px) {
@@ -226,6 +233,10 @@ input[type='radio'] {
     }
 
     .speed-div {
+        display: none;
+    }
+
+    #description_hud {
         display: none;
     }
 }

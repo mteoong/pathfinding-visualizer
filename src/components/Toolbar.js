@@ -35,9 +35,13 @@ class Toolbar extends Component {
               return;
         }
     }
-    
+
     mazeGenerator = () => {
 
+    }
+
+    clearBoard = () => {
+        this.child.current.clearBoard();
     }
 
     render() {
@@ -64,12 +68,12 @@ class Toolbar extends Component {
                   <h2 className="toolbar-h2"> Maze Generating Algorithm </h2>
                   <div className="custom-select-wrapper">
                     <div className="custom-select">
-                          <div className="custom-select__trigger"><span className="selected">Recursive Division</span>
+                          <div className="custom-select__trigger"><span className="selected">Random</span>
                           </div>
                           <div className="custom-options mazeGenerator">
-                              <span className="custom-option selected" data-value="Recursive Division Horizontal">Recursive Division</span>
-                              <span className="custom-option" data-value="Random">Random</span>
-                              <span className="custom-option" data-value="Prim's">Prim's</span>
+                              <span className="custom-option selected" data-value="Random">Random</span>
+                              <span className="custom-option" data-value="Recursive Division Horizontal">Recursive Division</span>
+                              <span className="custom-option" data-value="Random">Spiral</span>
                           </div>
                       </div>
                   </div>
@@ -90,12 +94,12 @@ class Toolbar extends Component {
                 </div>
                 <div>
                   <h2 className="toolbar-h2"> Clear </h2>
-                    <div className="clear"> Clear Board </div>
+                    <div className="clear" onClick={this.clearBoard}> Clear Board </div>
                 </div>
                 <div className="speed-div">
                   <h2 className="toolbar-h2"> Speed </h2>
-                  <div class="slidecontainer">
-                    <input type="range" min="10" max="200" defaultValue="40" class="slider" id="speed"></input>
+                  <div className="slidecontainer">
+                    <input type="range" min="10" max="200" defaultValue="40" className="slider" id="speed"></input>
                     <h3 id="speed-setting"> Fast </h3>
                   </div>
                 </div>

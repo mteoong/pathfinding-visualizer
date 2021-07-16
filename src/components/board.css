@@ -26,6 +26,18 @@ table {
     z-index: -1;
     margin: auto;
     border: 1px solid rgb(175, 216, 248);
-    margin-top: 6px;
     background-color: transparent;
+}
+
+.hud {
+    height: 40px;
+    display: flex;
+    justify-content: center;
+    margin: 0px 30px;
+    font-size: 1.8rem;
+}
+
+.hud > p {
+    margin: 0px 20px;
+    padding: 5px;
 }

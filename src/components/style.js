@@ -10,7 +10,24 @@ function dropdown() {
                 this.parentNode.querySelector('.custom-option.selected').classList.remove('selected');
                 this.classList.add('selected');
                 this.closest('.custom-select').querySelector('.custom-select__trigger span').textContent = this.textContent;
-                
+
+                let description = document.getElementById("description_hud");
+                switch(this.textContent) {
+                    case "Dijkstra's":
+                        description.innerHTML = "Dijkstra's is <strong> weighted </strong> and <strong> guarantees </strong> the shortest path!";
+                        break;
+                    case "A*":
+                        description.innerHTML = "A* Search is <strong> weighted </strong> and <strong> guarantees </strong> the shortest path!";
+                        break;
+                    case "Breadth First Search":
+                        description.innerHTML = "Breadth First Search is <strong> unweighted </strong> and <strong> guarantees </strong> the shortest path!";
+                        break;
+                    case "Depth First Search":
+                        description.innerHTML = "Depth First Search is <strong> unweighted </strong> and <strong> does not guarantee </strong> the shortest path!";
+                        break;
+                    default:
+                        break;
+                }
             }
         })
     }

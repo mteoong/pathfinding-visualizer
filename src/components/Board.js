@@ -36,7 +36,7 @@ class Board extends Component {
             return;
         }
         const gridWrapper = document.querySelector('#root');
-        let row_size = Math.floor((gridWrapper.offsetHeight - 223)/27);
+        let row_size = Math.floor((gridWrapper.offsetHeight - 223 - 40)/27);
         let col_size = Math.min(60, Math.floor((gridWrapper.offsetWidth - 60)/27));
         let arr=[]
         for(let i = 0; i < row_size; i++){
@@ -184,18 +184,28 @@ class Board extends Component {
     }
 
     choosePathfinder = (pathfinder, speed) => {
+        let nodes_visited = document.getElementById("visited_hud");
+        let nodes_path = document.getElementById("shortest_hud");
+        let description = document.getElementById("description_hud");
+        nodes_visited.innerText = "Nodes Visited: 0";
+        nodes_path.innerText = "Shortest Path: 0";
+
         switch(pathfinder) {
             case "Dijkstra's":
                 this.pathfindAlgorithm = dijkstraAlgorithm;
+                description.innerHTML = "Dijkstra's is <strong> weighted </strong> and <strong> guarantees </strong> the shortest path!";
                 break;
             case "A*":
                 this.pathfindAlgorithm = aStar;
+                description.innerHTML = "A* Search is <strong> weighted </strong> and <strong> guarantees </strong> the shortest path!";
                 break;
             case "bfs":
                 this.pathfindAlgorithm = bfs;
+                description.innerHTML = "Breadth First Search is <strong> unweighted </strong> and <strong> guarantees </strong> the shortest path!";
                 break;
             case "dfs":
                 this.pathfindAlgorithm = dfs;
+                description.innerHTML = "Depth First Search is <strong> unweighted </strong> and <strong> does not guarantees </strong> the shortest path!";
                 break;
             default:
                 break;
@@ -204,13 +214,14 @@ class Board extends Component {
     }
 
     applyPathfinder = (pathfindingFunction, speed) => {
-        console.log('hi');
         this.instantAnimation = false;
         this.animating = true;
         let arr = this.state.grid;
         this.clearPathfinder();
         let pathSpeed = speed;
         let visitSpeed = Math.floor(speed/5);
+        let nodes_visited = document.getElementById("visited_hud");
+        let nodes_path = document.getElementById("shortest_hud");
 
         let {visited_nodes, shortestPath} = pathfindingFunction(this.state.grid, this.state.start_node, this.state.end_node);
         
@@ -221,6 +232,7 @@ class Board extends Component {
                       const node = shortestPath[j];
                       arr[node.row][node.col].isShortestPath = true;
                       document.getElementById(`node-${node.row}-${node.col}`).classList.add('node_path');
+                      nodes_path.innerText = `Shortest Path: ${j + 1}`;
                     }, pathSpeed * j);
                 }
             }
@@ -237,6 +249,7 @@ class Board extends Component {
                     const node = visited_nodes[i];
                     arr[node.row][node.col].isVisited = true;
                     document.getElementById(`node-${node.row}-${node.col}`).classList.add('node_visited');
+                    nodes_visited.innerText = `Nodes Visited: ${i + 1}`;
                 }, visitSpeed * i);
             }
             
@@ -260,9 +273,10 @@ class Board extends Component {
         }
         let arr = this.state.grid;
         this.clearPathfinder();
+        let nodes_visited = document.getElementById("visited_hud");
+        let nodes_path = document.getElementById("shortest_hud");
 
         let {visited_nodes, shortestPath} = this.pathfindAlgorithm(this.state.grid, this.state.start_node, this.state.end_node);
-        console.log(visited_nodes);
 
         for (let i = 0; i < visited_nodes.length; i++) {            
             let node = visited_nodes[i];
@@ -278,6 +292,9 @@ class Board extends Component {
             document.getElementById(`node-${node.row}-${node.col}`).classList.add('node_path', 'instant');
         }
 
+        nodes_visited.innerText = `Nodes Visited: ${visited_nodes.length}`;
+        nodes_path.innerText = `Shortest Path: ${shortestPath.length}`;
+
         this.setState({
             grid:arr,
             visited:visited_nodes.length,
@@ -285,10 +302,47 @@ class Board extends Component {
         })
     }
 
+    clearBoard = () => {
+        if (this.animating) {
+            return;
+        }
+        let arr = this.state.grid;
+        for (let i = 0; i < arr.length; i++){
+            for(let j = 0; j < arr[0].length; j++){
+                arr[i][j].isWall = false;
+                arr[i][j].isVisited = false;
+                arr[i][j].isShortestPath =  false;
+                arr[i][j].instant = false;
+                let element = document.getElementById(`node-${i}-${j}`);
+                element.classList.remove("node_path");
+                element.classList.remove("node_visited");
+                element.classList.remove("instant");
+                element.classList.remove("node_wall");
+            }
+        }
+
+        let nodes_visited = document.getElementById("visited_hud");
+        let nodes_path = document.getElementById("shortest_hud");
+        nodes_visited.innerText = "Nodes Visited: 0";
+        nodes_path.innerText = "Shortest Path: 0";
+
+        this.instantAnimation = false;
+        this.setState({
+            grid:arr,
+            visited: 0,
+            shortestPath: 0,
+        })
+    }
+
     render() {
         let tr_style = {display:"table-row"}
         return(
             <div className="board-wrapper">
+              <div className="hud">
+                  <p id="description_hud"> Dijkstra's is <strong> weighted </strong> and <strong> guarantees </strong> the shortest path!</p>
+                  <p id="visited_hud"> Nodes Visited: 0 </p>
+                  <p id="shortest_hud"> Shortest Path: 0 </p>
+              </div>
               <table cellSpacing="0">
                 {
                   this.state.grid.map((row,index)=>{
