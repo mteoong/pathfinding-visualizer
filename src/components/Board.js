@@ -5,6 +5,9 @@ import dijkstraAlgorithm from '../algorithms/dijkstra';
 import aStar from '../algorithms/aStar';
 import bfs from '../algorithms/bfs';
 import dfs from '../algorithms/dfs';
+import random from '../algorithms/random';
+import recursiveDivision from '../algorithms/recursiveDivision';
+import spiral from '../algorithms/spiral';
 
 class Board extends Component {
     constructor(props){
@@ -22,6 +25,7 @@ class Board extends Component {
         this.animating = false;
         this.instantAnimation = false;
         this.pathfindAlgorithm = () => {};
+        this.mazeAlgorithm = () => {};
     }
 
     componentDidMount(){
@@ -193,19 +197,15 @@ class Board extends Component {
         switch(pathfinder) {
             case "Dijkstra's":
                 this.pathfindAlgorithm = dijkstraAlgorithm;
-                description.innerHTML = "Dijkstra's is <strong> weighted </strong> and <strong> guarantees </strong> the shortest path!";
                 break;
             case "A*":
                 this.pathfindAlgorithm = aStar;
-                description.innerHTML = "A* Search is <strong> weighted </strong> and <strong> guarantees </strong> the shortest path!";
                 break;
             case "bfs":
                 this.pathfindAlgorithm = bfs;
-                description.innerHTML = "Breadth First Search is <strong> unweighted </strong> and <strong> guarantees </strong> the shortest path!";
                 break;
             case "dfs":
                 this.pathfindAlgorithm = dfs;
-                description.innerHTML = "Depth First Search is <strong> unweighted </strong> and <strong> does not guarantees </strong> the shortest path!";
                 break;
             default:
                 break;
@@ -332,6 +332,54 @@ class Board extends Component {
             visited: 0,
             shortestPath: 0,
         })
+    }
+
+    chooseMazeGenerator = (mazeGenerator, speed) => {
+        this.clearBoard();
+
+        switch(mazeGenerator) {
+            case "Random":
+                this.mazeAlgorithm = random;
+                break;
+            case "Recursive Division":
+                this.mazeAlgorithm = recursiveDivision;
+                break;
+            case "Spiral":
+                this.mazeAlgorithm = spiral;
+                break;
+            default:
+                break;
+        }
+        this.applyMazeGenerator(this.mazeAlgorithm, speed);
+    }
+
+    applyMazeGenerator = (mazeGeneratingFunction, speed) => {
+        this.instantAnimation = false;
+        this.animating = true;
+        let arr = this.state.grid;
+        this.clearPathfinder();
+        let pathSpeed = speed / 4;
+
+        let walls = mazeGeneratingFunction(this.state.grid, this.state.start_node, this.state.end_node);
+        
+        const animate = async () => {
+            for (let i = 0; i < walls.length; i++) {
+                setTimeout(() => {
+                    const node = walls[i];
+                    arr[node.row][node.col].isWall = true;
+                    document.getElementById(`node-${node.row}-${node.col}`).classList.add('node_wall');
+                }, pathSpeed * i);
+            }
+            
+            this.setState({
+                grid:arr,
+            })
+        }   
+        animate().then(()=> {
+            setTimeout(() => {
+                this.animating = false;
+            }, walls.length * pathSpeed + 500);
+        });
     }
 
     render() {

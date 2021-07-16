@@ -37,7 +37,23 @@ class Toolbar extends Component {
     }
 
     mazeGenerator = () => {
+      let selected = document.querySelector(".custom-options.mazeGenerator > .selected");
+      let selectedText = selected.textContent;
+      let speed = document.querySelector('#speed').value;
 
+      switch(selectedText){
+          case "Random":
+              this.child.current.chooseMazeGenerator("Random", speed);
+              break;
+          case "Recursive Division":
+              this.child.current.chooseMazeGenerator("Recursive Division", speed);
+              break;
+          case "Spiral":
+              this.child.current.chooseMazeGenerator("Spiral", speed);
+              break;
+          default:
+            return;
+      }
     }
 
     clearBoard = () => {
