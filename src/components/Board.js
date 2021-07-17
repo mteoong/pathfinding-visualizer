@@ -190,7 +190,6 @@ class Board extends Component {
     choosePathfinder = (pathfinder, speed) => {
         let nodes_visited = document.getElementById("visited_hud");
         let nodes_path = document.getElementById("shortest_hud");
-        let description = document.getElementById("description_hud");
         nodes_visited.innerText = "Nodes Visited: 0";
         nodes_path.innerText = "Shortest Path: 0";
 
@@ -214,6 +213,9 @@ class Board extends Component {
     }
 
     applyPathfinder = (pathfindingFunction, speed) => {
+        if (this.animating) {
+            return;
+        }
         this.instantAnimation = false;
         this.animating = true;
         let arr = this.state.grid;
@@ -354,6 +356,9 @@ class Board extends Component {
     }
 
     applyMazeGenerator = (mazeGeneratingFunction, speed) => {
+        if (this.animating) {
+            return;
+        }
         this.instantAnimation = false;
         this.animating = true;
         let arr = this.state.grid;
